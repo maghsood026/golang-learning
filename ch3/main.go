@@ -1,7 +1,9 @@
 package main
 
-import "fmt"
-
+import (
+	"fmt"
+	"maps"
+)
 
 func sliceOfSlice() {
 	x := make([]string, 0, 5)
@@ -64,15 +66,64 @@ func stringToByteAndRune() {
 	/// take care when converting int to string
 	var x int = 65
 	var y = string(x)
-	fmt.Printf("%v",y)
+	fmt.Printf("%v", y)
+}
+func mapOperation() {
+	m := map[string]int{
+		"hello": 5,
+		"world": 10,
+	}
+	n := map[string]int{
+		"hello": 5,
+		"world": 10,
+	}
+	fmt.Println(maps.Equal(m, n))
+
+	v, ok := m["hello"]
+	fmt.Println(v, ok)
+	v, ok = m["heyyYou"]
+	fmt.Println(v, ok)
+	delete(m, "hello")
+	v, ok = m["hello"]
+	fmt.Println(v, ok)
+	clear(m)
+	v, ok = m["world"]
+	fmt.Println(v, ok, len(m))
+}
+func createSetFromMap() {
+	intSet := map[int]bool{}
+	vals := []int{5, 10, 2, 5, 8, 7, 3, 9, 1, 2, 10}
+	for _, v := range vals {
+		intSet[v] = true
+	}
+	fmt.Println(len(vals), len(intSet))
+	fmt.Println(intSet[5])
+	fmt.Println(intSet[500])
+	if intSet[100] {
+		fmt.Println("100 is in the set")
+	}
+
+}
+func createSetFromStruct() {
+	intSet := map[int]struct{}{}
+	vals := []int{5, 10, 2, 5, 8, 7, 3, 9, 1, 2, 10}
+	for _, v := range vals {
+		intSet[v] = struct{}{}
+	}
+
+	if _, ok := intSet[500]; ok {
+		fmt.Println("ok")
+	}
 }
 func main() {
-	// arraySliceCreation()
-	// sliceOfSlice()
-	// copySliceAndArray()
-	// convertArrayToSlice()
-	// convertSliceToArray()
-	// stringToByteAndRune()
-	
+	mapOperation()
+	arraySliceCreation()
+	sliceOfSlice()
+	copySliceAndArray()
+	convertArrayToSlice()
+	convertSliceToArray()
+	stringToByteAndRune()
+	createSetFromMap()
+	createSetFromStruct()
 
 }
