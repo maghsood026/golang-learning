@@ -3,9 +3,16 @@ package main
 import (
 	"errors"
 	"fmt"
+	"io"
+	"log"
 	"os"
 	"strconv"
 )
+
+type Person struct {
+	age  int
+	name string
+}
 
 func addTo(base int, values ...int) []int {
 	output := make([]int, 0)
@@ -47,6 +54,22 @@ var opMap = map[string]func(i, j int) int{
 	"/": div,
 }
 
+func modifyFails(i int, s string, p Person) {
+	i = i * 2
+	s = "Hallo"
+	p.name = "Bob"
+}
+
+func getFile(name string) (*os.File, func(), error) {
+	file, err := os.Open(name)
+	if err != nil {
+		return nil, nil, err
+	}
+	return file, func() {
+		file.Close()
+	}, nil
+}
+
 func main() {
 	fmt.Println(addTo(10, 2, 3, 4))
 	result, reminder, err := updated_div(1, 1)
@@ -75,7 +98,6 @@ func main() {
 		[]string{"2", "/", "3"},
 		[]string{"2", "%", "3"},
 		[]string{"two", "+", "three"},
-		[]string{"5"},
 	}
 	for _, expression := range expressions {
 		firestNumber, err := strconv.Atoi(expression[0])
@@ -97,5 +119,26 @@ func main() {
 		fmt.Println(result)
 
 	}
+	p := Person{}
+	i := 2
+	s := "tooo"
+	modifyFails(i, s, p)
+	fmt.Println(i, s, p)
+	f, close, err := getFile(os.Args[1])
+	if err != nil {
+		log.Fatal(err)
+	}
+	data := make([]byte, 2048)
+	for  {
+		count, err := f.Read(data)
+		os.Stdout.Write(data[:count])
+		if err != nil {
+			if err != io.EOF {
+				log.Fatal(err)
+			}
+			break
+		}
+	}
+	defer close()
 
 }
